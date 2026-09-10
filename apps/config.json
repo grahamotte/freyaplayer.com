@@ -1,5 +1,5 @@
 {
-  "build": "1.22.1",
+  "build": "1.22.2",
   "contactEmail": "graham.otte@gmail.com",
   "contactFirstName": "Graham",
   "contactLastName": "Otte",
@@ -105,6 +105,6 @@
     },
     "android": {}
   },
-  "version": "1.22.1",
-  "whatsNew": "Fixes a crash that could close Freya Player while loading on Apple TV."
+  "version": "1.22.2",
+  "whatsNew": "Fixes HomePod audio playback on additional tvOS 27 versions."
 }
