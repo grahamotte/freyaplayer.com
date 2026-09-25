@@ -32,7 +32,7 @@ struct MediaPlayButton: View {
     @State private var recoveryTask: Task<Void, Never>?
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 12) {
+        VStack(alignment: .leading, spacing: AppTheme.Spacing.small) {
             Button {
                 guard !isHandlingLongPress else {
                     isHandlingLongPress = false
@@ -540,12 +540,13 @@ private struct PlaybackDialogModifier: ViewModifier {
             content
                 .fullScreenCover(isPresented: $isPresented) {
                     ZStack {
-                        Color.black.opacity(0.5)
+                        AppTheme.modalScrim
                             .ignoresSafeArea()
 
                         playbackDialog
-                            .clipShape(RoundedRectangle(cornerRadius: 28, style: .continuous))
-                            .shadow(color: .black.opacity(0.35), radius: 28, y: 12)
+                            .background(AppTheme.backgroundTop)
+                            .clipShape(RoundedRectangle(cornerRadius: AppTheme.Radius.large, style: .continuous))
+                            .shadow(color: AppTheme.artworkShadow, radius: 28, y: 12)
                     }
                     .presentationBackground(.clear)
                 }
@@ -600,11 +601,11 @@ private struct PlaybackOptionsDialog: View {
     @FocusState private var isPlayFocused: Bool
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 22) {
+        VStack(alignment: .leading, spacing: AppTheme.Spacing.large) {
             Text("Play Options")
-                .font(dialogTitleFont)
+                .font(PlatformMetadata.sectionTitleFont)
 
-            VStack(spacing: 16) {
+            VStack(spacing: AppTheme.Spacing.small) {
                 playbackMenu(title: title(for: draftQuality), systemImage: "display") {
                     ForEach(qualityOptions) { quality in
                         Button {
@@ -668,10 +669,10 @@ private struct PlaybackOptionsDialog: View {
             if let error {
                 Text(error)
                     .font(.callout)
-                    .foregroundStyle(.orange)
+                    .foregroundStyle(AppTheme.warning)
             }
 
-            VStack(spacing: 14) {
+            VStack(spacing: AppTheme.Spacing.small) {
                 Button(action: play) {
                     Group {
                         if isLoading {
@@ -682,7 +683,7 @@ private struct PlaybackOptionsDialog: View {
                     }
                     .frame(maxWidth: .infinity)
                 }
-                .buttonStyle(MediaGlassButtonStyle(horizontalPadding: 24, verticalPadding: 16))
+                .buttonStyle(MediaGlassButtonStyle(size: .compact))
                 .focused($isPlayFocused)
                 .disabled(isOffline || isLoading)
 
@@ -690,25 +691,16 @@ private struct PlaybackOptionsDialog: View {
                     Text("Cancel")
                         .frame(maxWidth: .infinity)
                 }
-                .buttonStyle(MediaGlassButtonStyle(horizontalPadding: 24, verticalPadding: 16))
+                .buttonStyle(MediaGlassButtonStyle(size: .compact))
             }
         }
-        .padding(34)
+        .padding(AppTheme.Spacing.xLarge)
         .foregroundStyle(AppTheme.primaryText)
         .frame(width: dialogWidth)
-        .background(AppTheme.backgroundTop)
         .presentationSizing(.fitted)
         .task {
             isPlayFocused = true
         }
-    }
-
-    private var dialogTitleFont: Font {
-#if os(tvOS)
-        .system(size: 28, weight: .bold)
-#else
-        .title2.bold()
-#endif
     }
 
     private func cancel() {
@@ -768,26 +760,32 @@ private struct PlaybackOptionsDialog: View {
         let screenWidth = UIApplication.shared.connectedScenes
             .compactMap { ($0 as? UIWindowScene)?.screen.bounds.width }
             .first ?? 390
-        return min(screenWidth - 24, 640)
+        return min(screenWidth - (PlatformMetadata.pageGutter * 2), 640)
 #endif
     }
 
     private var playbackPlanBlock: some View {
-        VStack(alignment: .leading, spacing: 10) {
+        Group {
             if let plan = playbackOptions?.playbackPlan(for: draftSelection) {
-                ForEach(plan.conversions) { conversion in
-                    playbackPlanLine(conversion)
+                Grid(
+                    alignment: .leadingFirstTextBaseline,
+                    horizontalSpacing: AppTheme.Spacing.xSmall,
+                    verticalSpacing: AppTheme.Spacing.xSmall
+                ) {
+                    ForEach(plan.conversions) { conversion in
+                        playbackPlanLine(conversion)
+                    }
                 }
             } else {
                 Text("Source format information is unavailable.")
-                    .font(transcodingTextFont)
                     .foregroundStyle(AppTheme.secondaryText)
             }
         }
-        .padding(18)
+        .font(transcodingTextFont)
+        .padding(AppTheme.Spacing.medium)
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(AppTheme.surfaceFill)
-        .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
+        .clipShape(RoundedRectangle(cornerRadius: AppTheme.Radius.card, style: .continuous))
     }
 
     private var draftSelection: MediaPlaybackSelection {
@@ -801,22 +799,16 @@ private struct PlaybackOptionsDialog: View {
     }
 
     private func playbackPlanLine(_ conversion: MediaPlaybackConversion) -> some View {
-        HStack(alignment: .firstTextBaseline, spacing: 8) {
+        GridRow {
             Text("\(conversion.element.rawValue):")
                 .foregroundStyle(AppTheme.secondaryText)
-                .frame(minWidth: 82, alignment: .leading)
             Text(conversion.description)
-                .foregroundStyle(conversion.isConverted ? .orange : AppTheme.primaryText)
+                .foregroundStyle(conversion.isConverted ? AppTheme.warning : AppTheme.primaryText)
         }
-        .font(transcodingTextFont)
     }
 
     private var transcodingTextFont: Font {
-#if os(tvOS)
-        .system(size: 18)
-#else
-        .callout
-#endif
+        PlatformMetadata.isTV ? PlatformMetadata.labelFont : .callout
     }
 
     private func trackTitle(_ option: MediaPlaybackOption, defaultID: String?) -> String {
@@ -833,11 +825,19 @@ private struct PlaybackOptionsDialog: View {
         @ViewBuilder content: () -> Content
     ) -> some View {
         Menu(content: content) {
-            Label(title, systemImage: systemImage)
-                .lineLimit(1)
-                .frame(maxWidth: .infinity, alignment: .leading)
+            HStack(spacing: AppTheme.Spacing.small) {
+                Label(title, systemImage: systemImage)
+                    .lineLimit(1)
+
+                Spacer(minLength: 0)
+
+                Image(systemName: "chevron.up.chevron.down")
+                    .foregroundStyle(AppTheme.secondaryText)
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
         }
-        .buttonStyle(MediaGlassButtonStyle(horizontalPadding: 24, verticalPadding: 16))
+        .menuStyle(.button)
+        .buttonStyle(MediaGlassButtonStyle(size: .compact))
         .frame(maxWidth: .infinity, alignment: .leading)
     }
 }

@@ -41,9 +41,9 @@ struct ItemChildListSection: View {
     }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 18) {
+        VStack(alignment: .leading, spacing: AppTheme.Spacing.medium) {
             Text(title)
-                .font(.title3.weight(.semibold))
+                .font(PlatformMetadata.sectionTitleFont)
 
             if children.isEmpty {
                 if refreshTracker.isRefreshing(.children(item.id)) {
@@ -53,12 +53,10 @@ struct ItemChildListSection: View {
                         .foregroundStyle(AppTheme.secondaryText)
                 }
             } else {
-                VStack(alignment: .leading, spacing: 16) {
+                VStack(alignment: .leading, spacing: AppTheme.Spacing.small) {
                     ForEach(Array(children.enumerated()), id: \.element.id) { position, child in
-                        let usesFocusedForeground = PlatformMetadata.isTV && focusedChildID == child.id
-
                         NavigationLink(value: destination(child)) {
-                            HStack(spacing: 18) {
+                            HStack(spacing: AppTheme.Spacing.medium) {
                                 MarqueeText(
                                     text: title(for: child, position: position),
                                     font: .headline,
@@ -73,16 +71,13 @@ struct ItemChildListSection: View {
                                 }
 
                                 Image(systemName: "chevron.right")
-                                    .foregroundStyle(
-                                        usesFocusedForeground ? AppTheme.inverseText.opacity(0.72) : AppTheme.secondaryText
-                                    )
+                                    .foregroundStyle(AppTheme.secondaryText)
                             }
+                            .padding(.horizontal, AppTheme.Spacing.large)
+                            .padding(.vertical, AppTheme.Spacing.medium)
                             .frame(maxWidth: .infinity, alignment: .leading)
-                            .foregroundStyle(usesFocusedForeground ? AppTheme.inverseText : AppTheme.primaryText)
                         }
-                        .buttonStyle(.bordered)
-                        .buttonBorderShape(.roundedRectangle(radius: 18))
-                        .controlSize(.large)
+                        .buttonStyle(MediaSurfaceButtonStyle(restingFill: AppTheme.surfaceFill))
                         .id(child.id)
                         .focused($focusedChildID, equals: child.id)
                         .platformHover { hoveredChildID = $0 ? child.id : nil }

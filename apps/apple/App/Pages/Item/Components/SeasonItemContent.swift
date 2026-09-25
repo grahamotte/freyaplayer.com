@@ -17,7 +17,7 @@ struct SeasonItemContent: View {
 
     var body: some View {
         MediaView(model: model, data: item.mediaViewData()) {
-            VStack(alignment: .leading, spacing: 32) {
+            VStack(alignment: .leading, spacing: AppTheme.Spacing.xLarge) {
                 MediaItemActionRow {
                     MediaPlayAllButton(model: model, items: playableItems)
                     MediaCollectionWatchStatusButton(model: model, item: item)

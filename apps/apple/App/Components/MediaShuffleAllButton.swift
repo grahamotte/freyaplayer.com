@@ -37,6 +37,7 @@ struct MediaPlayAllButton: View {
                 Label("Play All", systemImage: "play.fill")
             }
         }
+        .menuStyle(.button)
         .buttonStyle(MediaGlassButtonStyle())
         .focused($isPlayFocused)
         .disabled(model.isOffline || isLoading || orderedPlayableItems.isEmpty)

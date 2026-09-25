@@ -23,7 +23,7 @@ struct IOSLibraryPageContent: View {
                     VStack(alignment: .leading, spacing: contentSpacing) {
                         header
 
-                        LazyVGrid(columns: columns, alignment: .leading, spacing: gridSpacing) {
+                        LazyVGrid(columns: columns, alignment: .leading, spacing: rowSpacing) {
                             ForEach(state.displayedItems) { item in
                                 itemLink(item)
                             }
@@ -42,9 +42,10 @@ struct IOSLibraryPageContent: View {
         }
     }
 
-    private var contentPadding: CGFloat { PlatformMetadata.isPhone ? 16 : 32 }
-    private var contentSpacing: CGFloat { PlatformMetadata.isPhone ? 20 : 28 }
-    private var gridSpacing: CGFloat { PlatformMetadata.isPhone ? 16 : 24 }
+    private var contentPadding: CGFloat { PlatformMetadata.pageGutter }
+    private var contentSpacing: CGFloat { PlatformMetadata.pageSectionSpacing }
+    private var gridSpacing: CGFloat { PlatformMetadata.tileSpacing }
+    private var rowSpacing: CGFloat { PlatformMetadata.pageSectionSpacing }
 
     private var columns: [GridItem] {
         if PlatformMetadata.isPhone {
@@ -52,7 +53,7 @@ struct IOSLibraryPageContent: View {
         }
         if PlatformMetadata.isMac {
             let minimum: CGFloat = state.library.artworkStyle == .poster ? 180 : 260
-            return [GridItem(.adaptive(minimum: minimum, maximum: minimum + 40), spacing: 16)]
+            return [GridItem(.adaptive(minimum: minimum, maximum: minimum + 40), spacing: gridSpacing)]
         }
         let count = state.library.artworkStyle == .poster ? 4 : 3
         return Array(repeating: GridItem(.flexible(), spacing: gridSpacing), count: count)
@@ -91,10 +92,10 @@ struct IOSLibraryPageContent: View {
     private var phoneHeader: some View {
         VStack(alignment: .leading, spacing: contentSpacing) {
             Text(state.library.title)
-                .font(.largeTitle.weight(.bold))
+                .font(PlatformMetadata.pageTitleFont)
                 .lineLimit(1)
 
-            HStack(alignment: .top, spacing: 12) {
+            HStack(alignment: .top, spacing: PlatformMetadata.controlSpacing) {
                 LibraryPageFilterControl(filter: state.filter, onChange: state.setFilter)
 
                 LibraryPageSortControl(
@@ -108,7 +109,7 @@ struct IOSLibraryPageContent: View {
             }
 
             if let item = state.libraryWatchStatusItem {
-                HStack(spacing: 12) {
+                HStack(spacing: PlatformMetadata.controlSpacing) {
                     MediaPlayAllButton(model: model, items: state.displayedPlayableItems)
                     MediaCollectionWatchStatusButton(
                         model: model,
@@ -127,7 +128,7 @@ struct IOSLibraryPageContent: View {
         VStack(alignment: .leading, spacing: contentSpacing) {
             HStack(alignment: .firstTextBaseline) {
                 Text(state.library.title)
-                    .font(.largeTitle.weight(.bold))
+                    .font(PlatformMetadata.pageTitleFont)
                     .lineLimit(1)
 
                 Spacer(minLength: 0)
@@ -138,7 +139,7 @@ struct IOSLibraryPageContent: View {
             }
 
             ViewThatFits(in: .horizontal) {
-                HStack(alignment: .top, spacing: 12) {
+                HStack(alignment: .top, spacing: PlatformMetadata.controlSpacing) {
                     LibraryPageFilterControl(filter: state.filter, onChange: state.setFilter)
 
                     LibraryPageSortControl(
@@ -161,7 +162,7 @@ struct IOSLibraryPageContent: View {
                     }
                 }
 
-                VStack(alignment: .leading, spacing: 8) {
+                VStack(alignment: .leading, spacing: PlatformMetadata.controlSpacing) {
                     LibraryPageFilterControl(filter: state.filter, onChange: state.setFilter)
 
                     LibraryPageSortControl(

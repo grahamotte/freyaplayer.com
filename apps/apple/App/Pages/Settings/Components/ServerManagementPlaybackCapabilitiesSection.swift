@@ -6,16 +6,16 @@ struct ServerManagementPlaybackCapabilitiesSection: View {
 
     var body: some View {
         ServerManagementSection("Playback Capabilities") {
-            VStack(alignment: .leading, spacing: 18) {
+            VStack(alignment: .leading, spacing: AppTheme.Spacing.medium) {
                 Text("Formats AVFoundation reports this \(PlatformMetadata.deviceName) can play. Playback options show whether Freya uses that native path or asks the server to convert the item.")
                     .foregroundStyle(AppTheme.secondaryText)
 
                 ForEach(PlaybackCapabilityCategory.allCases) { category in
                     let categoryCapabilities = capabilities.filter { $0.category == category }
                     if !categoryCapabilities.isEmpty {
-                        VStack(alignment: .leading, spacing: 10) {
+                        VStack(alignment: .leading, spacing: AppTheme.Spacing.small) {
                             Text(category.rawValue)
-                                .font(.subheadline.weight(.semibold))
+                                .font(.headline)
 
                             ForEach(categoryCapabilities) { capability in
                                 capabilityRow(capability)
@@ -32,23 +32,23 @@ struct ServerManagementPlaybackCapabilitiesSection: View {
     }
 
     private func capabilityRow(_ capability: PlaybackCapability) -> some View {
-        HStack(alignment: .top, spacing: 12) {
+        HStack(alignment: .top, spacing: AppTheme.Spacing.small) {
             Image(systemName: systemImage(for: capability.support))
                 .foregroundStyle(color(for: capability.support))
-                .frame(width: 20)
+                .frame(width: AppTheme.Spacing.large)
 
-            VStack(alignment: .leading, spacing: 3) {
-                HStack(alignment: .firstTextBaseline, spacing: 8) {
+            VStack(alignment: .leading, spacing: AppTheme.Spacing.xxSmall) {
+                HStack(alignment: .firstTextBaseline, spacing: AppTheme.Spacing.xSmall) {
                     Text(capability.name)
                         .font(.body.weight(.medium))
 
                     Text(capability.support.title)
-                        .font(.caption.weight(.semibold))
+                        .font(PlatformMetadata.labelFont.weight(.semibold))
                         .foregroundStyle(color(for: capability.support))
                 }
 
                 Text(capability.detail)
-                    .font(.caption)
+                    .font(PlatformMetadata.labelFont)
                     .foregroundStyle(AppTheme.secondaryText)
             }
         }
@@ -65,8 +65,8 @@ struct ServerManagementPlaybackCapabilitiesSection: View {
 
     private func color(for support: PlaybackCapabilitySupport) -> Color {
         switch support {
-        case .supported: .green
-        case .conditional: .orange
+        case .supported: AppTheme.positive
+        case .conditional: AppTheme.warning
         case .unavailable: AppTheme.secondaryText
         }
     }

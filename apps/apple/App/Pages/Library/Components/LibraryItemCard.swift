@@ -20,19 +20,19 @@ struct LibraryItemCard: View {
     }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 10) {
+        VStack(alignment: .leading, spacing: PlatformMetadata.tileTitleSpacing) {
             artwork
 
-            VStack(alignment: .leading, spacing: PlatformMetadata.libraryTileTitleSubtitleSpacing) {
+            VStack(alignment: .leading, spacing: PlatformMetadata.tileSubtitleSpacing) {
                 MarqueeText(
                     text: item.title,
-                    font: .headline,
+                    font: PlatformMetadata.tileTitleFont,
                     isActive: PlatformMetadata.supportsItemTitleHoverMarquee && isHovered
                 )
 
                 if let subtitle = item.libraryTileSubtitle(showsAddedAt: showsAddedAt) {
                     Text(subtitle)
-                        .font(PlatformMetadata.libraryTileSubtitleFont)
+                        .font(PlatformMetadata.labelFont)
                         .foregroundStyle(AppTheme.secondaryText)
                         .lineLimit(1)
                 }
@@ -44,7 +44,7 @@ struct LibraryItemCard: View {
 
     private var artwork: some View {
         ZStack(alignment: .bottomLeading) {
-            RoundedRectangle(cornerRadius: 18, style: .continuous)
+            RoundedRectangle(cornerRadius: AppTheme.Radius.artwork, style: .continuous)
                 .fill(AppTheme.surfaceFill)
                 .overlay {
                     if let artworkImage {
@@ -64,7 +64,7 @@ struct LibraryItemCard: View {
                 }
         }
         .aspectRatio(artworkStyle.aspectRatio, contentMode: .fit)
-        .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
+        .clipShape(RoundedRectangle(cornerRadius: AppTheme.Radius.artwork, style: .continuous))
         .task(id: artworkURL) {
             artworkImage = nil
             guard let artworkURL else { return }

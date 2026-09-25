@@ -32,20 +32,105 @@ enum PlatformMetadata {
         #endif
     }()
 
-    static var libraryTileTitleSubtitleSpacing: CGFloat {
-        #if os(tvOS)
-        10
-        #else
-        2
-        #endif
+    static var pageGutter: CGFloat {
+        if isTV { return AppTheme.Spacing.xxLarge }
+        return isPhone ? AppTheme.Spacing.medium : AppTheme.Spacing.xLarge
     }
 
-    static var libraryTileSubtitleFont: Font {
-        #if os(tvOS)
-        .caption
-        #else
-        .footnote
-        #endif
+    static var controlSpacing: CGFloat {
+        isTV ? AppTheme.Spacing.large : AppTheme.Spacing.small
+    }
+
+    static var panelPadding: CGFloat {
+        isPhone ? AppTheme.Spacing.medium : AppTheme.Spacing.large
+    }
+
+    static var pageSectionSpacing: CGFloat {
+        if isTV { return AppTheme.Spacing.xxLarge }
+        return isPhone ? AppTheme.Spacing.large : AppTheme.Spacing.xLarge
+    }
+
+    static var shelfSpacing: CGFloat {
+        isPhone ? AppTheme.Spacing.small : AppTheme.Spacing.medium
+    }
+
+    static var tileSpacing: CGFloat {
+        if isTV { return AppTheme.Spacing.xxLarge }
+        return isPhone ? AppTheme.Spacing.small : AppTheme.Spacing.medium
+    }
+
+    static var tileTitleSpacing: CGFloat {
+        isTV ? AppTheme.Spacing.large : AppTheme.Spacing.xSmall
+    }
+
+    static var tileSubtitleSpacing: CGFloat {
+        AppTheme.Spacing.xxSmall
+    }
+
+    static var pageTitleSize: CGFloat {
+        if isTV { return 64 }
+        return isPhone ? 38 : 52
+    }
+
+    static var itemTitleSize: CGFloat {
+        if isTV { return 58 }
+        return isPhone ? 28 : 38
+    }
+
+    static var pageTitleFont: Font {
+        .system(size: pageTitleSize, weight: .bold)
+    }
+
+    static var itemTitleFont: Font {
+        .system(size: itemTitleSize, weight: .bold)
+    }
+
+    static var uiPageTitleFont: UIFont {
+        .systemFont(ofSize: pageTitleSize, weight: .bold)
+    }
+
+    static var sectionTitleFont: Font {
+        Font.system(sectionTitleTextStyle, weight: .semibold)
+    }
+
+    static var uiSectionTitleFont: UIFont {
+        uiFont(sectionTitleUITextStyle, weight: .semibold)
+    }
+
+    static var controlFont: Font {
+        .body.weight(.semibold)
+    }
+
+    static var uiControlFont: UIFont {
+        uiFont(.body, weight: .semibold)
+    }
+
+    static var tileTitleFont: Font {
+        isTV ? .callout.weight(.semibold) : .headline
+    }
+
+    static var uiTileTitleFont: UIFont {
+        isTV ? uiFont(.callout, weight: .semibold) : .preferredFont(forTextStyle: .headline)
+    }
+
+    static var labelFont: Font {
+        isTV ? .caption : .footnote
+    }
+
+    static var uiLabelFont: UIFont {
+        .preferredFont(forTextStyle: isTV ? .caption1 : .footnote)
+    }
+
+    private static var sectionTitleTextStyle: Font.TextStyle {
+        isTV ? .title3 : .title2
+    }
+
+    private static var sectionTitleUITextStyle: UIFont.TextStyle {
+        isTV ? .title3 : .title2
+    }
+
+    private static func uiFont(_ style: UIFont.TextStyle, weight: UIFont.Weight) -> UIFont {
+        .systemFont(ofSize: UIFont.preferredFont(forTextStyle: style).pointSize, weight: weight)
     }
 
     static var supportsItemTitleHoverMarquee: Bool {

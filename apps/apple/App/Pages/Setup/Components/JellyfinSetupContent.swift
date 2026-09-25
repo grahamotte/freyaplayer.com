@@ -12,12 +12,12 @@ struct JellyfinSetupContent: View {
     @FocusState private var focusedField: Field?
 
     var body: some View {
-        VStack(spacing: 36) {
+        VStack(spacing: AppTheme.Spacing.xLarge) {
             Spacer()
 
-            VStack(alignment: .leading, spacing: 18) {
+            VStack(alignment: .leading, spacing: AppTheme.Spacing.medium) {
                 MediaProviderLabel(providerID: .jellyfin)
-                    .font(sectionTitleFont)
+                    .font(PlatformMetadata.sectionTitleFont)
 
                 serverAddressLayout {
                     setupTextField(
@@ -66,7 +66,7 @@ struct JellyfinSetupContent: View {
                     ProgressView(message)
                 }
 
-                HStack(spacing: 16) {
+                HStack(spacing: AppTheme.Spacing.medium) {
                     Button("Connect") {
                         if let serverURL {
                             model.connectJellyfin(
@@ -86,12 +86,12 @@ struct JellyfinSetupContent: View {
                 }
             }
             .frame(maxWidth: 720, alignment: .leading)
-            .padding(usesCompactLayout ? 20 : 28)
+            .padding(PlatformMetadata.panelPadding)
             .background(PanelBackground())
 
             Spacer()
         }
-        .padding(usesCompactLayout ? 16 : 48)
+        .padding(PlatformMetadata.pageGutter)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(AppBackground())
         .task {
@@ -116,12 +116,8 @@ struct JellyfinSetupContent: View {
         horizontalSizeClass == .compact
     }
 
-    private var sectionTitleFont: Font {
-        .title3.weight(.semibold)
-    }
-
     private var fieldLabelFont: Font {
-        .footnote.weight(.semibold)
+        PlatformMetadata.labelFont.weight(.semibold)
     }
 
     private var shortFieldWidth: CGFloat {
@@ -130,15 +126,15 @@ struct JellyfinSetupContent: View {
 
     private func serverAddressLayout<Content: View>(@ViewBuilder content: () -> Content) -> some View {
         let layout = usesCompactLayout
-            ? AnyLayout(VStackLayout(alignment: .leading, spacing: 18))
-            : AnyLayout(HStackLayout(alignment: .bottom, spacing: 18))
+            ? AnyLayout(VStackLayout(alignment: .leading, spacing: AppTheme.Spacing.medium))
+            : AnyLayout(HStackLayout(alignment: .bottom, spacing: AppTheme.Spacing.medium))
         return layout {
             content()
         }
     }
 
     private func setupField<Content: View>(_ title: String, @ViewBuilder content: () -> Content) -> some View {
-        VStack(alignment: .leading, spacing: 8) {
+        VStack(alignment: .leading, spacing: AppTheme.Spacing.xSmall) {
             Text(title)
                 .font(fieldLabelFont)
                 .foregroundStyle(AppTheme.secondaryText)
@@ -157,20 +153,20 @@ struct JellyfinSetupContent: View {
         #if os(tvOS)
             let isFocused = focusedField == field
             let prompt = Text(title)
-                .foregroundStyle(isFocused ? Color.black : AppTheme.secondaryText)
+                .foregroundStyle(isFocused ? AppTheme.inverseText : AppTheme.secondaryText)
 
             setupField(title) {
                 TextField(title, text: text, prompt: prompt)
                     .textInputAutocapitalization(.never)
                     .autocorrectionDisabled()
                     .focused($focusedField, equals: field)
-                    .foregroundStyle(isFocused ? Color.black : AppTheme.primaryText)
+                    .foregroundStyle(isFocused ? AppTheme.inverseText : AppTheme.primaryText)
                     .controlSize(.large)
             }
         #else
             let isFocused = focusedField == field
             let prompt = Text(placeholder)
-                .foregroundStyle(Color.black.opacity(0.6))
+                .foregroundStyle(AppTheme.secondaryText)
 
             setupField(title) {
                 TextField(title, text: text, prompt: prompt)
@@ -178,21 +174,10 @@ struct JellyfinSetupContent: View {
                     .autocorrectionDisabled()
                     .focused($focusedField, equals: field)
                     .textFieldStyle(.plain)
-                    .foregroundStyle(Color.black)
-                    .padding(.horizontal, 12)
-                    .padding(.vertical, 10)
-                    .background(
-                        Color.white.opacity(0.86),
-                        in: RoundedRectangle(cornerRadius: 8, style: .continuous)
-                    )
-                    .overlay {
-                        RoundedRectangle(cornerRadius: 8, style: .continuous)
-                            .stroke(
-                                isFocused ? Color.accentColor : Color.black.opacity(0.2),
-                                lineWidth: isFocused ? 2 : 1
-                            )
-                    }
-                    .environment(\.colorScheme, .light)
+                    .foregroundStyle(AppTheme.primaryText)
+                    .padding(.horizontal, AppTheme.Spacing.small)
+                    .padding(.vertical, AppTheme.Spacing.small)
+                    .glassField(isFocused: isFocused)
             }
         #endif
     }

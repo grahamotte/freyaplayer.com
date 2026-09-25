@@ -16,7 +16,7 @@ struct ServerManagementPanel: View {
     var body: some View {
         ScrollView {
             if let server = model.connectedServer {
-                VStack(alignment: .leading, spacing: 24) {
+                VStack(alignment: .leading, spacing: AppTheme.Spacing.large) {
                     ServerManagementServerSection(
                         server: server,
                         onDeactivate: {
@@ -25,7 +25,7 @@ struct ServerManagementPanel: View {
                     )
 
                     ServerManagementSection("Cache") {
-                        VStack(alignment: .leading, spacing: 14) {
+                        VStack(alignment: .leading, spacing: AppTheme.Spacing.small) {
                             ServerManagementControlRow("Application Cache Version") {
                                 Text(String(cache.applicationCacheVersion))
                                     .monospacedDigit()
@@ -61,8 +61,7 @@ struct ServerManagementPanel: View {
                     ServerManagementPlaybackCapabilitiesSection()
                 }
                 .frame(maxWidth: 860, alignment: .leading)
-                .padding(PlatformMetadata.isPhone ? 16 : 32)
-                .padding(PlatformMetadata.isPhone ? 16 : 48)
+                .padding(PlatformMetadata.pageGutter)
                 .frame(maxWidth: .infinity, alignment: .center)
             }
         }

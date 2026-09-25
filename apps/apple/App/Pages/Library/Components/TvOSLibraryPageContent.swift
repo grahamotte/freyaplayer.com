@@ -447,14 +447,14 @@ private final class LibraryPageCollectionViewController: UIViewController, UICol
 
     private func makeLayout() -> UICollectionViewLayout {
         let style = tileStyle
-        let horizontalInset: CGFloat = 68
-        let interItemSpacing: CGFloat = 44
-        let lineSpacing: CGFloat = 32
+        let horizontalInset = PlatformMetadata.pageGutter
+        let interItemSpacing = PlatformMetadata.tileSpacing
+        let lineSpacing = PlatformMetadata.pageSectionSpacing
 
-        let titleFont = UIFont.preferredFont(forTextStyle: .title1).withTraits(.traitBold)
+        let titleFont = PlatformMetadata.uiPageTitleFont
         let titleHeight = ceil(titleFont.lineHeight)
-        let titleTop: CGFloat = 44
-        let gapBetweenTitleAndButtons: CGFloat = 28
+        let titleTop = AppTheme.Spacing.xxLarge
+        let gapBetweenTitleAndButtons = AppTheme.Spacing.large
 
         let measurementButton = GlassMenuButton()
         measurementButton.title = "Width"
@@ -496,7 +496,7 @@ private final class LibraryPageCollectionViewController: UIViewController, UICol
 
             let section = NSCollectionLayoutSection(group: group)
             section.interGroupSpacing = lineSpacing
-            section.contentInsets = .init(top: 28, leading: horizontalInset, bottom: 0, trailing: horizontalInset)
+            section.contentInsets = .init(top: AppTheme.Spacing.large, leading: horizontalInset, bottom: 0, trailing: horizontalInset)
             return section
         }, configuration: configuration)
     }
@@ -592,17 +592,17 @@ private final class LibraryGridCell: UICollectionViewCell {
 
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.clipsToBounds = false
-        imageView.layer.cornerRadius = 24
+        imageView.layer.cornerRadius = AppTheme.Radius.artwork
         imageView.layer.cornerCurve = .continuous
         imageView.contentMode = .scaleAspectFill
         PlatformMetadata.configureFocusedImageView(imageView)
 
         iconView.tintColor = AppTheme.uiSecondaryText
-        iconView.preferredSymbolConfiguration = UIImage.SymbolConfiguration(pointSize: 44, weight: .semibold)
+        iconView.preferredSymbolConfiguration = UIImage.SymbolConfiguration(textStyle: .title2, scale: .medium)
 
         placeholderStack.axis = .vertical
         placeholderStack.alignment = .center
-        placeholderStack.spacing = 16
+        placeholderStack.spacing = AppTheme.Spacing.small
         placeholderStack.translatesAutoresizingMaskIntoConstraints = false
         placeholderStack.addArrangedSubview(iconView)
         PlatformMetadata.overlayContent(for: imageView).addSubview(placeholderStack)
@@ -610,12 +610,12 @@ private final class LibraryGridCell: UICollectionViewCell {
         PlatformMetadata.overlayContent(for: imageView).addSubview(progressView)
 
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
-        titleLabel.font = .preferredFont(forTextStyle: .callout).withTraits(.traitBold)
+        titleLabel.font = PlatformMetadata.uiTileTitleFont
         titleLabel.setContentHuggingPriority(.required, for: .vertical)
         titleLabel.setContentCompressionResistancePriority(.required, for: .vertical)
 
         subtitleLabel.translatesAutoresizingMaskIntoConstraints = false
-        subtitleLabel.font = .preferredFont(forTextStyle: .caption1)
+        subtitleLabel.font = PlatformMetadata.uiLabelFont
         subtitleLabel.textColor = AppTheme.uiSecondaryText
         subtitleLabel.numberOfLines = 1
         subtitleLabel.setContentHuggingPriority(.required, for: .vertical)
@@ -643,11 +643,11 @@ private final class LibraryGridCell: UICollectionViewCell {
 
             titleLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
             titleLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
-            titleLabel.topAnchor.constraint(equalTo: imageView.bottomAnchor, constant: 20),
+            titleLabel.topAnchor.constraint(equalTo: imageView.bottomAnchor, constant: PlatformMetadata.tileTitleSpacing),
 
             subtitleLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
             subtitleLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
-            subtitleLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 1),
+            subtitleLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: PlatformMetadata.tileSubtitleSpacing),
             subtitleLabel.bottomAnchor.constraint(lessThanOrEqualTo: contentView.bottomAnchor)
         ])
     }
@@ -754,11 +754,11 @@ private final class LibraryPageHeaderView: UICollectionReusableView {
     override init(frame: CGRect) {
         super.init(frame: frame)
 
-        titleLabel.font = .preferredFont(forTextStyle: .title1).withTraits(.traitBold)
+        titleLabel.font = PlatformMetadata.uiPageTitleFont
         titleLabel.textColor = AppTheme.uiPrimaryText
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
 
-        countLabel.font = .preferredFont(forTextStyle: .title3).withTraits(.traitBold)
+        countLabel.font = PlatformMetadata.uiSectionTitleFont
         countLabel.textColor = AppTheme.uiSecondaryText
         countLabel.translatesAutoresizingMaskIntoConstraints = false
 
@@ -790,28 +790,26 @@ private final class LibraryPageHeaderView: UICollectionReusableView {
         addSubview(watchButtonHostView)
 
         NSLayoutConstraint.activate([
-            titleLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 68),
-            titleLabel.topAnchor.constraint(equalTo: topAnchor, constant: 44),
+            titleLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: PlatformMetadata.pageGutter),
+            titleLabel.topAnchor.constraint(equalTo: topAnchor, constant: AppTheme.Spacing.xxLarge),
 
-            countLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -68),
+            countLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -PlatformMetadata.pageGutter),
             countLabel.centerYAnchor.constraint(equalTo: titleLabel.centerYAnchor),
 
-            filterButton.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 68),
-            filterButton.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 28),
-            filterButton.widthAnchor.constraint(greaterThanOrEqualToConstant: 220),
+            filterButton.leadingAnchor.constraint(equalTo: leadingAnchor, constant: PlatformMetadata.pageGutter),
+            filterButton.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: AppTheme.Spacing.large),
 
-            sortButton.leadingAnchor.constraint(equalTo: filterButton.trailingAnchor, constant: 24),
+            sortButton.leadingAnchor.constraint(equalTo: filterButton.trailingAnchor, constant: PlatformMetadata.controlSpacing),
             sortButton.centerYAnchor.constraint(equalTo: filterButton.centerYAnchor),
-            sortButton.widthAnchor.constraint(greaterThanOrEqualToConstant: 220),
             sortButton.heightAnchor.constraint(equalTo: filterButton.heightAnchor),
-            sortButton.trailingAnchor.constraint(lessThanOrEqualTo: shuffleButtonHostView.leadingAnchor, constant: -24),
+            sortButton.trailingAnchor.constraint(lessThanOrEqualTo: shuffleButtonHostView.leadingAnchor, constant: -PlatformMetadata.controlSpacing),
 
-            shuffleButtonHostView.leadingAnchor.constraint(greaterThanOrEqualTo: sortButton.trailingAnchor, constant: 24),
+            shuffleButtonHostView.leadingAnchor.constraint(greaterThanOrEqualTo: sortButton.trailingAnchor, constant: PlatformMetadata.controlSpacing),
             shuffleButtonHostView.centerYAnchor.constraint(equalTo: filterButton.centerYAnchor),
             shuffleButtonHostView.heightAnchor.constraint(equalTo: filterButton.heightAnchor),
 
-            watchButtonHostView.leadingAnchor.constraint(equalTo: shuffleButtonHostView.trailingAnchor, constant: 12),
-            watchButtonHostView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -68),
+            watchButtonHostView.leadingAnchor.constraint(equalTo: shuffleButtonHostView.trailingAnchor, constant: PlatformMetadata.controlSpacing),
+            watchButtonHostView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -PlatformMetadata.pageGutter),
             watchButtonHostView.centerYAnchor.constraint(equalTo: filterButton.centerYAnchor),
             watchButtonHostView.heightAnchor.constraint(equalTo: filterButton.heightAnchor),
 
@@ -930,43 +928,28 @@ private final class GlassMenuButton: UIButton {
     override init(frame: CGRect) {
         super.init(frame: frame)
         clipsToBounds = false
-        layer.cornerRadius = 36
-        layer.cornerCurve = .continuous
         configurationUpdateHandler = { [weak self] button in
             guard let self else { return }
 
             var configuration = UIButton.Configuration.plain()
             configuration.attributedTitle = self.title.map {
                 AttributedString($0, attributes: AttributeContainer([
-                    .font: UIFont.systemFont(ofSize: 24, weight: .semibold)
+                    .font: PlatformMetadata.uiControlFont
                 ]))
             }
             configuration.image = self.icon
             configuration.imagePlacement = .leading
-            configuration.imagePadding = 12
-            configuration.preferredSymbolConfigurationForImage = UIImage.SymbolConfiguration(pointSize: 18, weight: .semibold)
-            configuration.baseForegroundColor = button.isFocused ? AppTheme.uiInverseText : AppTheme.uiPrimaryText
-            configuration.contentInsets = .init(top: 16, leading: 28, bottom: 16, trailing: 28)
+            configuration.imagePadding = AppTheme.Spacing.small
+            configuration.preferredSymbolConfigurationForImage = UIImage.SymbolConfiguration(font: PlatformMetadata.uiControlFont)
+            configuration.baseForegroundColor = AppTheme.uiGlassForeground(isFocused: button.isFocused)
+            configuration.contentInsets = AppTheme.uiGlassContentInsets
+            AppTheme.applyGlassBackground(to: &configuration.background, isFocused: button.isFocused)
             button.configuration = configuration
-
-            button.backgroundColor = button.isFocused ? AppTheme.uiPrimaryText : AppTheme.uiSurfaceBorder
-            button.layer.borderColor = (button.isFocused ? UIColor.clear : AppTheme.uiPrimaryText.withAlphaComponent(0.28)).cgColor
-            button.layer.borderWidth = button.isFocused ? 0 : 1
         }
     }
 
     @available(*, unavailable)
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
-    }
-}
-
-private extension UIFont {
-    func withTraits(_ traits: UIFontDescriptor.SymbolicTraits) -> UIFont {
-        guard let descriptor = fontDescriptor.withSymbolicTraits(traits) else {
-            return self
-        }
-
-        return UIFont(descriptor: descriptor, size: pointSize)
     }
 }

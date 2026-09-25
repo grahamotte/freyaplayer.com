@@ -10,9 +10,10 @@ struct AmbientMeshBackground: View {
     var blurRadius: CGFloat = 120
     var saturation: Double = 0.95
     var opacity: Double = 0.74
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     var body: some View {
-        TimelineView(.animation) { timeline in
+        TimelineView(.animation(paused: reduceMotion)) { timeline in
             let time = timeline.date.timeIntervalSinceReferenceDate
 
             MeshGradient(

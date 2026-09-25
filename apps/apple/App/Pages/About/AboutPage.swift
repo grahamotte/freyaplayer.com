@@ -2,12 +2,12 @@ import SwiftUI
 
 struct AboutPage: View {
     var body: some View {
-        VStack(spacing: 36) {
+        VStack(spacing: AppTheme.Spacing.xLarge) {
             Spacer()
 
-            VStack(alignment: .leading, spacing: 24) {
+            VStack(alignment: .leading, spacing: AppTheme.Spacing.large) {
                 Label("About Freya Player", systemImage: "info.circle")
-                    .font(.title3.weight(.semibold))
+                    .font(PlatformMetadata.sectionTitleFont)
 
                 Text("A small, native player for Jellyfin and Plex, built to feel like it came with the device.")
                     .foregroundStyle(AppTheme.secondaryText)
@@ -28,7 +28,7 @@ struct AboutPage: View {
                     body: "Read it, fork it, send a pull request."
                 )
 
-                VStack(alignment: .leading, spacing: 6) {
+                VStack(alignment: .leading, spacing: AppTheme.Spacing.xSmall) {
                     sectionTitle("Bugs?")
                     Text("Open an issue!")
                         .foregroundStyle(AppTheme.secondaryText)
@@ -40,23 +40,23 @@ struct AboutPage: View {
                 }
 
                 Text("Version \(appVersion)")
-                    .font(.caption)
+                    .font(PlatformMetadata.labelFont)
                     .foregroundStyle(AppTheme.secondaryText)
             }
             .frame(maxWidth: PlatformMetadata.isTV ? 1200 : 720, alignment: .leading)
-            .padding(28)
+            .padding(PlatformMetadata.panelPadding)
             .background(PanelBackground())
 
             Spacer()
         }
-        .padding(48)
+        .padding(PlatformMetadata.pageGutter)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(AppBackground())
         .navigationTitle("About")
     }
 
     private func section(title: String, body: String) -> some View {
-        VStack(alignment: .leading, spacing: 6) {
+        VStack(alignment: .leading, spacing: AppTheme.Spacing.xSmall) {
             sectionTitle(title)
             Text(body)
                 .foregroundStyle(AppTheme.secondaryText)

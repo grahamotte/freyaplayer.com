@@ -7,7 +7,7 @@ struct ServerManagementLibrariesSection: View {
 
     var body: some View {
         ServerManagementSection("Libraries") {
-            VStack(spacing: 14) {
+            VStack(spacing: AppTheme.Spacing.small) {
                 ForEach(Array(libraries.enumerated()), id: \.element.id) { index, library in
                     ServerManagementLibraryRow(
                         title: library.title,
@@ -42,16 +42,16 @@ private struct ServerManagementLibraryRow: View {
     var body: some View {
         Group {
             if PlatformMetadata.isPhone {
-                VStack(alignment: .leading, spacing: 10) {
+                VStack(alignment: .leading, spacing: AppTheme.Spacing.small) {
                     titleText
-                    HStack(spacing: 16) {
+                    HStack(spacing: AppTheme.Spacing.medium) {
                         rowButtons
                         Spacer(minLength: 0)
                         eyeButton
                     }
                 }
             } else {
-                HStack(spacing: 16) {
+                HStack(spacing: AppTheme.Spacing.medium) {
                     rowButtons
                     titleText
                     Spacer(minLength: 0)
@@ -59,14 +59,12 @@ private struct ServerManagementLibraryRow: View {
                 }
             }
         }
-        .padding(.horizontal, PlatformMetadata.isPhone ? 12 : 18)
-        .padding(.vertical, 16)
-        .background(rowBackground)
+        .frame(maxWidth: .infinity, alignment: .leading)
     }
 
     private var titleText: some View {
         Text(title)
-            .font(.title3.weight(.medium))
+            .font(.body.weight(.medium))
             .lineLimit(1)
             .strikethrough(isHidden, color: AppTheme.secondaryText)
             .foregroundStyle(isHidden ? AppTheme.secondaryText : AppTheme.primaryText)
@@ -75,13 +73,13 @@ private struct ServerManagementLibraryRow: View {
     private var rowButtons: some View {
         Group {
             Button(action: onMoveUp) {
-                rowIcon("arrow.up", iconSize: 24, frameSize: 24, textStyle: .headline)
+                rowIcon("arrow.up")
             }
             .buttonStyle(rowButtonStyle)
             .disabled(!canMoveUp)
 
             Button(action: onMoveDown) {
-                rowIcon("arrow.down", iconSize: 24, frameSize: 24, textStyle: .headline)
+                rowIcon("arrow.down")
             }
             .buttonStyle(rowButtonStyle)
             .disabled(!canMoveDown)
@@ -90,42 +88,18 @@ private struct ServerManagementLibraryRow: View {
 
     private var eyeButton: some View {
         Button(action: onToggleVisibility) {
-            rowIcon(
-                isHidden ? "eye.slash" : "eye",
-                iconSize: visibilityIconSize,
-                frameSize: 24,
-                textStyle: .subheadline
-            )
+            rowIcon(isHidden ? "eye.slash" : "eye")
         }
         .buttonStyle(rowButtonStyle)
     }
 
     private var rowButtonStyle: MediaGlassButtonStyle {
-        MediaGlassButtonStyle(horizontalPadding: 14, verticalPadding: 14)
+        MediaGlassButtonStyle(size: .square)
     }
 
-    private var visibilityIconSize: CGFloat {
-        PlatformMetadata.isTV ? 16 : 18
-    }
-
-    private func rowIcon(
-        _ systemName: String,
-        iconSize: CGFloat,
-        frameSize: CGFloat,
-        textStyle: Font.TextStyle
-    ) -> some View {
+    private func rowIcon(_ systemName: String) -> some View {
         Image(systemName: systemName)
-            .font(.system(textStyle, weight: .semibold))
-            .frame(width: iconSize, height: iconSize)
-            .frame(width: frameSize, height: frameSize)
-    }
-
-    private var rowBackground: some View {
-        RoundedRectangle(cornerRadius: 28, style: .continuous)
-            .fill(AppTheme.subtleSurfaceFill)
-            .overlay {
-                RoundedRectangle(cornerRadius: 28, style: .continuous)
-                    .stroke(AppTheme.surfaceBorder, lineWidth: 1)
-            }
+            .font(PlatformMetadata.controlFont)
+            .frame(width: AppTheme.Spacing.large, height: AppTheme.Spacing.large)
     }
 }

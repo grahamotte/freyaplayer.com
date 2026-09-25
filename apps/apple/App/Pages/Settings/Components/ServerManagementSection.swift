@@ -10,14 +10,14 @@ struct ServerManagementSection<Content: View>: View {
     }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 18) {
+        VStack(alignment: .leading, spacing: AppTheme.Spacing.medium) {
             Text(title)
-                .font(.headline)
+                .font(PlatformMetadata.sectionTitleFont)
 
             content
         }
         .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(PlatformMetadata.isPhone ? 16 : 24)
+        .padding(PlatformMetadata.panelPadding)
         .background(PanelBackground())
         .serverManagementFocusSection()
     }
@@ -35,14 +35,14 @@ struct ServerManagementControlRow<Control: View>: View {
     var body: some View {
         Group {
             if PlatformMetadata.isPhone {
-                VStack(alignment: .leading, spacing: 12) {
+                VStack(alignment: .leading, spacing: AppTheme.Spacing.small) {
                     Text(title)
                         .foregroundStyle(AppTheme.secondaryText)
 
                     control
                 }
             } else {
-                HStack(alignment: .center, spacing: 20) {
+                HStack(alignment: .center, spacing: AppTheme.Spacing.large) {
                     Text(title)
                         .foregroundStyle(AppTheme.secondaryText)
 

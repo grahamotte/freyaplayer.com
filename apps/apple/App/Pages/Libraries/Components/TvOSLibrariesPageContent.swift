@@ -98,7 +98,7 @@ private final class LibrariesCollectionViewController: UIViewController, UIColle
         collectionView.remembersLastFocusedIndexPath = true
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         collectionView.contentInsetAdjustmentBehavior = .never
-        collectionView.contentInset = .init(top: 12, left: 0, bottom: 64, right: 0)
+        collectionView.contentInset = .init(top: AppTheme.Spacing.small, left: 0, bottom: PlatformMetadata.pageGutter, right: 0)
         collectionView.insetsLayoutMarginsFromSafeArea = false
         collectionView.layoutMargins = .zero
 
@@ -128,7 +128,7 @@ private final class LibrariesCollectionViewController: UIViewController, UIColle
             collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             collectionView.topAnchor.constraint(equalTo: view.topAnchor),
             collectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-            searchFocusGuide.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 48),
+            searchFocusGuide.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: PlatformMetadata.pageGutter),
             searchFocusGuide.topAnchor.constraint(equalTo: view.topAnchor),
             searchFocusGuide.widthAnchor.constraint(equalToConstant: 480),
             searchFocusGuide.heightAnchor.constraint(equalToConstant: 184)
@@ -337,10 +337,10 @@ private final class LibrariesCollectionViewController: UIViewController, UIColle
     }
 
     private func makeLayout() -> UICollectionViewLayout {
-        let horizontalInset: CGFloat = 48
+        let horizontalInset = PlatformMetadata.pageGutter
         let configuration = UICollectionViewCompositionalLayoutConfiguration()
         configuration.contentInsetsReference = .none
-        configuration.interSectionSpacing = 40
+        configuration.interSectionSpacing = PlatformMetadata.pageSectionSpacing
         configuration.boundarySupplementaryItems = [
             NSCollectionLayoutBoundarySupplementaryItem(
                 layoutSize: .init(widthDimension: .fractionalWidth(1), heightDimension: .absolute(184)),
@@ -365,9 +365,9 @@ private final class LibrariesCollectionViewController: UIViewController, UIColle
                 let item = NSCollectionLayoutItem(layoutSize: itemSize)
                 let group = NSCollectionLayoutGroup.horizontal(layoutSize: itemSize, subitems: [item])
                 let layoutSection = NSCollectionLayoutSection(group: group)
-                layoutSection.interGroupSpacing = 44
+                layoutSection.interGroupSpacing = PlatformMetadata.tileSpacing
                 layoutSection.orthogonalScrollingBehavior = .continuousGroupLeadingBoundary
-                layoutSection.contentInsets = .init(top: 8, leading: horizontalInset, bottom: 8, trailing: horizontalInset)
+                layoutSection.contentInsets = .init(top: AppTheme.Spacing.xSmall, leading: horizontalInset, bottom: AppTheme.Spacing.xSmall, trailing: horizontalInset)
 
                 let headerSize = NSCollectionLayoutSize(
                     widthDimension: .fractionalWidth(1),
@@ -392,7 +392,7 @@ private final class LibrariesCollectionViewController: UIViewController, UIColle
 
             case .manage:
                 let buttonWidth: CGFloat = 360
-                let buttonSpacing: CGFloat = 24
+                let buttonSpacing = PlatformMetadata.controlSpacing
                 let buttonCount = section.items.count
                 let itemSize = NSCollectionLayoutSize(
                     widthDimension: .absolute(buttonWidth),
@@ -411,7 +411,7 @@ private final class LibrariesCollectionViewController: UIViewController, UIColle
                 )
                 group.interItemSpacing = .fixed(buttonSpacing)
                 let layoutSection = NSCollectionLayoutSection(group: group)
-                layoutSection.contentInsets = .init(top: 28, leading: horizontalInset, bottom: 36, trailing: horizontalInset)
+                layoutSection.contentInsets = .init(top: AppTheme.Spacing.large, leading: horizontalInset, bottom: AppTheme.Spacing.xLarge, trailing: horizontalInset)
                 return layoutSection
             }
         }, configuration: configuration)
@@ -820,22 +820,22 @@ private final class LibraryTileCell: UICollectionViewCell {
 
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.clipsToBounds = false
-        imageView.layer.cornerRadius = 24
+        imageView.layer.cornerRadius = AppTheme.Radius.artwork
         imageView.layer.cornerCurve = .continuous
         imageView.contentMode = .scaleAspectFill
         PlatformMetadata.configureFocusedImageView(imageView)
 
         iconView.tintColor = AppTheme.uiSecondaryText
-        iconView.preferredSymbolConfiguration = UIImage.SymbolConfiguration(pointSize: 44, weight: .semibold)
+        iconView.preferredSymbolConfiguration = UIImage.SymbolConfiguration(textStyle: .title2, scale: .medium)
 
-        titleLabel.font = .preferredFont(forTextStyle: .headline)
+        titleLabel.font = PlatformMetadata.uiTileTitleFont
         titleLabel.textColor = AppTheme.uiSecondaryText
         titleLabel.numberOfLines = 2
-        titleLabel.textAlignment = .center
+        titleLabel.textAlignment = .natural
 
         placeholderStack.axis = .vertical
-        placeholderStack.alignment = .center
-        placeholderStack.spacing = 16
+        placeholderStack.alignment = .leading
+        placeholderStack.spacing = AppTheme.Spacing.small
         placeholderStack.translatesAutoresizingMaskIntoConstraints = false
 
         placeholderStack.addArrangedSubview(iconView)
@@ -852,10 +852,9 @@ private final class LibraryTileCell: UICollectionViewCell {
             imageView.topAnchor.constraint(equalTo: contentView.topAnchor),
             imageView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
 
-            placeholderStack.leadingAnchor.constraint(greaterThanOrEqualTo: PlatformMetadata.overlayContent(for: imageView).leadingAnchor, constant: 24),
-            placeholderStack.trailingAnchor.constraint(lessThanOrEqualTo: PlatformMetadata.overlayContent(for: imageView).trailingAnchor, constant: -24),
-            placeholderStack.centerXAnchor.constraint(equalTo: PlatformMetadata.overlayContent(for: imageView).centerXAnchor),
-            placeholderStack.centerYAnchor.constraint(equalTo: PlatformMetadata.overlayContent(for: imageView).centerYAnchor),
+            placeholderStack.leadingAnchor.constraint(equalTo: PlatformMetadata.overlayContent(for: imageView).leadingAnchor, constant: AppTheme.Spacing.large),
+            placeholderStack.trailingAnchor.constraint(lessThanOrEqualTo: PlatformMetadata.overlayContent(for: imageView).trailingAnchor, constant: -AppTheme.Spacing.large),
+            placeholderStack.bottomAnchor.constraint(equalTo: PlatformMetadata.overlayContent(for: imageView).bottomAnchor, constant: -AppTheme.Spacing.large),
 
             progressView.trailingAnchor.constraint(equalTo: PlatformMetadata.overlayContent(for: imageView).trailingAnchor, constant: -WatchProgressCircle.padding),
             progressView.bottomAnchor.constraint(equalTo: PlatformMetadata.overlayContent(for: imageView).bottomAnchor, constant: -WatchProgressCircle.padding),
@@ -947,21 +946,21 @@ private final class LibrariesActionCell: UICollectionViewListCell {
 
         activityIndicator.hidesWhenStopped = true
 
-        titleLabel.font = .preferredFont(forTextStyle: .headline)
+        titleLabel.font = PlatformMetadata.uiControlFont
         titleLabel.numberOfLines = 1
         titleLabel.textAlignment = .center
 
         stackView.axis = .horizontal
         stackView.alignment = .center
-        stackView.spacing = 10
+        stackView.spacing = AppTheme.Spacing.xSmall
         stackView.translatesAutoresizingMaskIntoConstraints = false
         stackView.addArrangedSubview(activityIndicator)
         stackView.addArrangedSubview(titleLabel)
 
         contentView.addSubview(stackView)
         NSLayoutConstraint.activate([
-            stackView.leadingAnchor.constraint(greaterThanOrEqualTo: contentView.leadingAnchor, constant: 28),
-            stackView.trailingAnchor.constraint(lessThanOrEqualTo: contentView.trailingAnchor, constant: -28),
+            stackView.leadingAnchor.constraint(greaterThanOrEqualTo: contentView.leadingAnchor, constant: AppTheme.uiGlassContentInsets.leading),
+            stackView.trailingAnchor.constraint(lessThanOrEqualTo: contentView.trailingAnchor, constant: -AppTheme.uiGlassContentInsets.trailing),
             stackView.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
             stackView.centerYAnchor.constraint(equalTo: contentView.centerYAnchor)
         ])
@@ -994,28 +993,19 @@ private final class LibrariesActionCell: UICollectionViewListCell {
             activityIndicator.stopAnimating()
         }
         let isVisuallyEnabled = isEnabled && (!isRefreshing || isFocused)
-        let foregroundColor = !isVisuallyEnabled
-            ? AppTheme.uiSecondaryText.withAlphaComponent(0.45)
-            : isFocused
-            ? AppTheme.uiInverseText
-            : AppTheme.uiPrimaryText
+        let foregroundColor = AppTheme.uiGlassForeground(isFocused: isFocused, isEnabled: isVisuallyEnabled)
         titleLabel.textColor = foregroundColor
         activityIndicator.color = foregroundColor
 
         var background = UIBackgroundConfiguration.clear().updated(for: state)
-        background.cornerRadius = 36
-        background.backgroundColor = isFocused ? AppTheme.uiPrimaryText : AppTheme.uiSurfaceBorder
-        background.strokeColor = isFocused
-            ? .clear
-            : AppTheme.uiPrimaryText.withAlphaComponent(isVisuallyEnabled ? 0.28 : 0.1)
-        background.strokeWidth = isFocused ? 0 : 1
+        AppTheme.applyGlassBackground(to: &background, isFocused: isFocused, isEnabled: isVisuallyEnabled)
         backgroundConfiguration = background
     }
 }
 
 private final class LibrariesSectionFooterView: UICollectionReusableView {
     static let reuseIdentifier = "LibrariesSectionFooterView"
-    private let verticalInset: CGFloat = 12
+    private let verticalInset = AppTheme.Spacing.small
 
     private let label = UILabel()
 
@@ -1061,7 +1051,7 @@ private final class LibrariesSectionFooterView: UICollectionReusableView {
 
 private final class LibrariesServerHeaderView: UICollectionReusableView {
     static let reuseIdentifier = "LibrariesServerHeaderView"
-    private let horizontalInset: CGFloat = 48
+    private let horizontalInset = PlatformMetadata.pageGutter
     private let label = UILabel()
     private let searchButton = UIButton(type: .system)
     private var onSearch: (() -> Void)?
@@ -1073,30 +1063,29 @@ private final class LibrariesServerHeaderView: UICollectionReusableView {
     override init(frame: CGRect) {
         super.init(frame: frame)
 
-        label.font = .systemFont(ofSize: 64, weight: .bold)
+        label.font = PlatformMetadata.uiPageTitleFont
         label.textColor = AppTheme.uiPrimaryText
         label.translatesAutoresizingMaskIntoConstraints = false
 
         var configuration = UIButton.Configuration.plain()
         configuration.title = "Search"
         configuration.image = UIImage(systemName: "magnifyingglass")
-        configuration.imagePadding = 10
-        configuration.cornerStyle = .capsule
+        configuration.imagePadding = AppTheme.Spacing.small
+        configuration.contentInsets = AppTheme.uiGlassContentInsets
+        configuration.preferredSymbolConfigurationForImage = UIImage.SymbolConfiguration(font: PlatformMetadata.uiControlFont)
+        configuration.titleTextAttributesTransformer = UIConfigurationTextAttributesTransformer { attributes in
+            var attributes = attributes
+            attributes.font = PlatformMetadata.uiControlFont
+            return attributes
+        }
         searchButton.configuration = configuration
-        searchButton.titleLabel?.font = .preferredFont(forTextStyle: .headline)
         searchButton.accessibilityLabel = "Search Server"
         searchButton.translatesAutoresizingMaskIntoConstraints = false
         searchButton.addTarget(self, action: #selector(search), for: .primaryActionTriggered)
         searchButton.configurationUpdateHandler = { button in
-            let isFocused = button.isFocused
-            var configuration = button.configuration
-            configuration?.baseForegroundColor = isFocused ? AppTheme.uiInverseText : AppTheme.uiPrimaryText
-            configuration?.background.backgroundColor = isFocused ? AppTheme.uiPrimaryText : AppTheme.uiSurfaceBorder
-            configuration?.background.strokeColor = isFocused
-                ? .clear
-                : AppTheme.uiPrimaryText.withAlphaComponent(0.28)
-            configuration?.background.strokeWidth = isFocused ? 0 : 1
-            configuration?.background.cornerRadius = 36
+            guard var configuration = button.configuration else { return }
+            configuration.baseForegroundColor = AppTheme.uiGlassForeground(isFocused: button.isFocused)
+            AppTheme.applyGlassBackground(to: &configuration.background, isFocused: button.isFocused)
             button.configuration = configuration
         }
 
@@ -1104,9 +1093,9 @@ private final class LibrariesServerHeaderView: UICollectionReusableView {
         addSubview(searchButton)
         NSLayoutConstraint.activate([
             label.leadingAnchor.constraint(equalTo: leadingAnchor, constant: horizontalInset),
-            label.trailingAnchor.constraint(lessThanOrEqualTo: searchButton.leadingAnchor, constant: -24),
-            label.topAnchor.constraint(equalTo: topAnchor, constant: 48),
-            label.bottomAnchor.constraint(lessThanOrEqualTo: bottomAnchor, constant: -44),
+            label.trailingAnchor.constraint(lessThanOrEqualTo: searchButton.leadingAnchor, constant: -AppTheme.Spacing.large),
+            label.topAnchor.constraint(equalTo: topAnchor, constant: AppTheme.Spacing.xxLarge),
+            label.bottomAnchor.constraint(lessThanOrEqualTo: bottomAnchor, constant: -AppTheme.Spacing.xxLarge),
 
             searchButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -horizontalInset),
             searchButton.centerYAnchor.constraint(equalTo: label.centerYAnchor),
@@ -1138,7 +1127,7 @@ private final class LibrariesServerHeaderView: UICollectionReusableView {
 
 private final class LibrariesSectionHeaderView: UICollectionReusableView {
     static let reuseIdentifier = "LibrariesSectionHeaderView"
-    private let verticalInset: CGFloat = 12
+    private let verticalInset = AppTheme.Spacing.small
 
     private let label = UILabel()
 
@@ -1149,7 +1138,7 @@ private final class LibrariesSectionHeaderView: UICollectionReusableView {
     override init(frame: CGRect) {
         super.init(frame: frame)
 
-        label.font = .preferredFont(forTextStyle: .title3).withTraits(.traitBold)
+        label.font = PlatformMetadata.uiSectionTitleFont
         label.textColor = AppTheme.uiPrimaryText
         label.translatesAutoresizingMaskIntoConstraints = false
 
@@ -1200,7 +1189,7 @@ private enum LibrariesShelfStyle: Hashable {
     }
 
     func cellSize(for availableWidth: CGFloat) -> CGSize {
-        let spacing: CGFloat = 44
+        let spacing = PlatformMetadata.tileSpacing
         let width = floor((availableWidth - (spacing * (columns - 1))) / columns)
         let height = floor(width / aspectRatio)
         return CGSize(width: width, height: height)
@@ -1213,15 +1202,5 @@ private enum LibrariesShelfStyle: Hashable {
         case .wide:
             return "tv.fill"
         }
-    }
-}
-
-private extension UIFont {
-    func withTraits(_ traits: UIFontDescriptor.SymbolicTraits) -> UIFont {
-        guard let descriptor = fontDescriptor.withSymbolicTraits(traits) else {
-            return self
-        }
-
-        return UIFont(descriptor: descriptor, size: pointSize)
     }
 }

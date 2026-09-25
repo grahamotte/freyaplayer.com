@@ -107,7 +107,7 @@ struct MediaView<Content: View>: View {
                 MediaArtworkView(url: data.artworkURL, title: data.title, style: data.artworkStyle)
                     .frame(width: artworkSize.width, height: artworkSize.height)
                     .overlay {
-                        RoundedRectangle(cornerRadius: 30, style: .continuous)
+                        RoundedRectangle(cornerRadius: AppTheme.Radius.large, style: .continuous)
                             .fill(
                                 LinearGradient(
                                     colors: [
@@ -200,7 +200,7 @@ struct MediaView<Content: View>: View {
         VStack(alignment: .leading, spacing: metrics.contentSpacing) {
             Button {} label: {
                 Text(data.title)
-                    .font(.system(size: metrics.titleFontSize, weight: .bold))
+                    .font(PlatformMetadata.itemTitleFont)
                     .lineLimit(3)
                     .frame(maxWidth: .infinity, alignment: .leading)
             }
@@ -211,7 +211,7 @@ struct MediaView<Content: View>: View {
                     HStack(alignment: .top, spacing: metrics.horizontalItemSpacing) {
                         ForEach(data.metadata) { entry in
                             Button {} label: {
-                                VStack(alignment: .leading, spacing: 8) {
+                                VStack(alignment: .leading, spacing: AppTheme.Spacing.xSmall) {
                                     Text(entry.label)
                                         .font(metrics.metadataLabelFont)
                                         .foregroundStyle(AppTheme.secondaryText)
@@ -225,7 +225,7 @@ struct MediaView<Content: View>: View {
                         }
 
                         Button { isShowingDetails = true } label: {
-                            VStack(alignment: .leading, spacing: 8) {
+                            VStack(alignment: .leading, spacing: AppTheme.Spacing.xSmall) {
                                 Text("More")
                                     .font(metrics.metadataLabelFont)
                                     .foregroundStyle(AppTheme.secondaryText)
@@ -271,7 +271,7 @@ struct MediaItemActionRow<Content: View>: View {
 
     var body: some View {
         ScrollView(.horizontal) {
-            HStack(alignment: .top, spacing: 12) {
+            HStack(alignment: .top, spacing: PlatformMetadata.controlSpacing) {
                 content
             }
         }
@@ -296,15 +296,15 @@ private struct FullScreenLayout {
             return min(72, max(32, size.width * 0.04))
         }
 
-        return size.width < 600 ? 16 : 32
+        return size.width < 600 ? AppTheme.Spacing.medium : AppTheme.Spacing.xLarge
     }
 
     var controlTopPadding: CGFloat {
-        PlatformMetadata.isTV ? 32 : 16
+        PlatformMetadata.isTV ? AppTheme.Spacing.xLarge : AppTheme.Spacing.medium
     }
 
     var contentBottomPadding: CGFloat {
-        PlatformMetadata.isTV ? 64 : 32
+        PlatformMetadata.isTV ? AppTheme.Spacing.xxLarge : AppTheme.Spacing.xLarge
     }
 
     func contentWidth(maximum: CGFloat) -> CGFloat {
@@ -330,7 +330,7 @@ private struct FullItemDetailsView: View {
             ZStack {
                 MediaBackdropView(artworkURL: artworkURL, backdropURL: backdropURL)
 
-                Color.black.opacity(0.4)
+                AppTheme.scrim
                     .ignoresSafeArea()
 
                 ScrollView {
@@ -366,9 +366,9 @@ private struct FullItemDetailsView: View {
     }
 
     private var header: some View {
-        VStack(alignment: .leading, spacing: 10) {
+        VStack(alignment: .leading, spacing: AppTheme.Spacing.xSmall) {
             Text(title)
-                .font(PlatformMetadata.isTV ? .system(size: 58, weight: .bold) : .largeTitle.bold())
+                .font(PlatformMetadata.itemTitleFont)
                 .frame(maxWidth: 1100, alignment: .leading)
 
             Text("\(rowCount) fields across \(nonemptySections.count) sections")
@@ -381,7 +381,7 @@ private struct FullItemDetailsView: View {
         let focusID = "description"
         let isFocused = focusedItemID == focusID
 
-        return VStack(alignment: .leading, spacing: 16) {
+        return VStack(alignment: .leading, spacing: AppTheme.Spacing.medium) {
             detailHeading("Description", caption: nil)
 
             Text(synopsis)
@@ -389,12 +389,9 @@ private struct FullItemDetailsView: View {
                 .foregroundStyle(AppTheme.secondaryText)
                 .fixedSize(horizontal: false, vertical: true)
                 .userSelectableText()
-                .padding(PlatformMetadata.isTV ? 20 : 16)
+                .padding(PlatformMetadata.isTV ? AppTheme.Spacing.large : AppTheme.Spacing.medium)
                 .frame(maxWidth: .infinity, alignment: .leading)
-                .background {
-                    RoundedRectangle(cornerRadius: 16, style: .continuous)
-                        .fill(isFocused ? AppTheme.emphasizedSurfaceFill : AppTheme.subtleSurfaceFill)
-                }
+                .focusSurface(isFocused: isFocused, restingFill: AppTheme.subtleSurfaceFill, cornerRadius: AppTheme.Radius.inline)
                 .focusable(PlatformMetadata.isTV)
                 .focused($focusedItemID, equals: focusID)
         }
@@ -402,11 +399,11 @@ private struct FullItemDetailsView: View {
     }
 
     private func artworkGallery(availableWidth: CGFloat) -> some View {
-        VStack(alignment: .leading, spacing: 16) {
+        VStack(alignment: .leading, spacing: AppTheme.Spacing.medium) {
             detailHeading("Artwork", caption: nil)
 
             ScrollView(.horizontal) {
-                HStack(alignment: .top, spacing: PlatformMetadata.isTV ? 24 : 16) {
+                HStack(alignment: .top, spacing: PlatformMetadata.isTV ? AppTheme.Spacing.large : AppTheme.Spacing.medium) {
                     ForEach(artwork) { image in
                         let focusID = "artwork:\(image.id)"
 
@@ -419,8 +416,8 @@ private struct FullItemDetailsView: View {
                             .focused($focusedItemID, equals: focusID)
                     }
                 }
-                .padding(.vertical, 8)
-                .padding(.horizontal, 4)
+                .padding(.vertical, AppTheme.Spacing.xSmall)
+                .padding(.horizontal, AppTheme.Spacing.xxSmall)
             }
             .scrollIndicators(.hidden)
         }
@@ -428,7 +425,7 @@ private struct FullItemDetailsView: View {
     }
 
     private func detailSection(_ section: MediaItemDetailSection, availableWidth: CGFloat) -> some View {
-        VStack(alignment: .leading, spacing: PlatformMetadata.isTV ? 24 : 18) {
+        VStack(alignment: .leading, spacing: PlatformMetadata.isTV ? AppTheme.Spacing.large : AppTheme.Spacing.medium) {
             detailHeading(
                 section.title,
                 caption: "\(section.rows.count) \(section.rows.count == 1 ? "field" : "fields")"
@@ -448,7 +445,7 @@ private struct FullItemDetailsView: View {
                 }
             }
         }
-        .padding(.vertical, PlatformMetadata.isTV ? 20 : 12)
+        .padding(.vertical, PlatformMetadata.isTV ? AppTheme.Spacing.large : AppTheme.Spacing.small)
         .overlay(alignment: .top) {
             Divider()
                 .overlay(AppTheme.surfaceBorder)
@@ -458,26 +455,26 @@ private struct FullItemDetailsView: View {
 
     private func detailHeading(_ title: String, caption: String?) -> some View {
         ViewThatFits(in: .horizontal) {
-            HStack(alignment: .firstTextBaseline, spacing: 16) {
+            HStack(alignment: .firstTextBaseline, spacing: AppTheme.Spacing.medium) {
                 Text(title)
-                    .font(PlatformMetadata.isTV ? .title2.bold() : .title3.bold())
+                    .font(PlatformMetadata.sectionTitleFont)
 
                 Spacer(minLength: 0)
 
                 if let caption {
                     Text(caption)
-                        .font(.caption)
+                        .font(PlatformMetadata.labelFont)
                         .foregroundStyle(AppTheme.secondaryText)
                 }
             }
 
-            VStack(alignment: .leading, spacing: 4) {
+            VStack(alignment: .leading, spacing: AppTheme.Spacing.xxSmall) {
                 Text(title)
-                    .font(PlatformMetadata.isTV ? .title2.bold() : .title3.bold())
+                    .font(PlatformMetadata.sectionTitleFont)
 
                 if let caption {
                     Text(caption)
-                        .font(.caption)
+                        .font(PlatformMetadata.labelFont)
                         .foregroundStyle(AppTheme.secondaryText)
                 }
             }
@@ -491,15 +488,15 @@ private struct FullItemDetailsView: View {
     }
 
     private var contentSpacing: CGFloat {
-        PlatformMetadata.isTV ? 48 : 32
+        PlatformMetadata.isTV ? AppTheme.Spacing.xxLarge : AppTheme.Spacing.xLarge
     }
 
     private var sectionSpacing: CGFloat {
-        PlatformMetadata.isTV ? 28 : 20
+        PlatformMetadata.pageSectionSpacing
     }
 
     private var gridSpacing: CGFloat {
-        PlatformMetadata.isTV ? 16 : 12
+        PlatformMetadata.isTV ? AppTheme.Spacing.medium : AppTheme.Spacing.small
     }
 
     private var nonemptySections: [MediaItemDetailSection] {
@@ -523,12 +520,7 @@ private struct FullItemDetailsView: View {
         Button { dismiss() } label: {
             Label("Close", systemImage: "xmark")
         }
-        .buttonStyle(
-            MediaGlassButtonStyle(
-                horizontalPadding: PlatformMetadata.isTV ? 22 : 20,
-                verticalPadding: PlatformMetadata.isTV ? 14 : 10
-            )
-        )
+        .buttonStyle(MediaGlassButtonStyle(size: .compact))
     }
 }
 
@@ -539,24 +531,21 @@ private struct FullItemDetailArtwork: View {
 
     private var height: CGFloat {
         let preferredHeight: CGFloat = PlatformMetadata.isTV ? 280 : 210
-        let availableImageWidth = max(availableWidth - 20, 1)
+        let availableImageWidth = max(availableWidth - (AppTheme.Spacing.xSmall * 2), 1)
         return min(preferredHeight, availableImageWidth / image.style.aspectRatio)
     }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 12) {
+        VStack(alignment: .leading, spacing: AppTheme.Spacing.small) {
             MediaArtworkView(url: image.url, title: image.label, style: image.style)
                 .frame(width: height * image.style.aspectRatio, height: height)
 
             Text(image.label)
-                .font(.caption.weight(.semibold))
+                .font(PlatformMetadata.labelFont.weight(.semibold))
                 .foregroundStyle(AppTheme.secondaryText)
         }
-        .padding(10)
-        .background {
-            RoundedRectangle(cornerRadius: 26, style: .continuous)
-                .fill(isFocused ? AppTheme.emphasizedSurfaceFill : .clear)
-        }
+        .padding(AppTheme.Spacing.xSmall)
+        .focusSurface(isFocused: isFocused, restingFill: Color.clear, cornerRadius: AppTheme.Radius.large)
     }
 }
 
@@ -565,9 +554,9 @@ private struct FullItemDetailRow: View {
     let isFocused: Bool
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 8) {
+        VStack(alignment: .leading, spacing: AppTheme.Spacing.xSmall) {
             Text(row.label)
-                .font(.caption.weight(.semibold))
+                .font(PlatformMetadata.labelFont.weight(.semibold))
                 .foregroundStyle(AppTheme.secondaryText)
 
             Text(row.value)
@@ -577,11 +566,8 @@ private struct FullItemDetailRow: View {
                 .userSelectableText()
         }
         .frame(maxWidth: .infinity, minHeight: PlatformMetadata.isTV ? 86 : 72, alignment: .topLeading)
-        .padding(PlatformMetadata.isTV ? 20 : 16)
-        .background {
-            RoundedRectangle(cornerRadius: 16, style: .continuous)
-                .fill(isFocused ? AppTheme.emphasizedSurfaceFill : AppTheme.subtleSurfaceFill)
-        }
+        .padding(PlatformMetadata.isTV ? AppTheme.Spacing.large : AppTheme.Spacing.medium)
+        .focusSurface(isFocused: isFocused, restingFill: AppTheme.subtleSurfaceFill, cornerRadius: AppTheme.Radius.inline)
     }
 }
 
@@ -597,7 +583,6 @@ private struct MediaViewMetrics {
     let metadataTileWidth: CGFloat
     let metadataLabelFont: Font
     let metadataValueFont: Font
-    let titleFontSize: CGFloat
     let headerOffset: CGFloat
 
     var panelHorizontalPadding: CGFloat {
@@ -625,7 +610,6 @@ private struct MediaViewMetrics {
             metadataTileWidth: metadataTileWidth,
             metadataLabelFont: metadataLabelFont,
             metadataValueFont: metadataValueFont,
-            titleFontSize: titleFontSize,
             headerOffset: headerOffset
         )
     }
@@ -644,7 +628,6 @@ private struct MediaViewMetrics {
                 metadataTileWidth: 128,
                 metadataLabelFont: .caption.weight(.semibold),
                 metadataValueFont: .callout.weight(.medium),
-                titleFontSize: 58,
                 headerOffset: 0
             )
         }
@@ -661,15 +644,14 @@ private struct MediaViewMetrics {
                 metadataTileWidth: 112,
                 metadataLabelFont: .footnote.weight(.semibold),
                 metadataValueFont: .headline.weight(.medium),
-                titleFontSize: 38,
                 headerOffset: 18
             )
         }
         if PlatformMetadata.isPhone {
             return MediaViewMetrics(
-                horizontalPadding: 20,
-                verticalPadding: 20,
-                artworkSpacing: 20,
+                horizontalPadding: PlatformMetadata.pageGutter,
+                verticalPadding: AppTheme.Spacing.medium,
+                artworkSpacing: AppTheme.Spacing.large,
                 panelLeadingPadding: 0,
                 panelTrailingPadding: 0,
                 panelVerticalPadding: 12,
@@ -678,7 +660,6 @@ private struct MediaViewMetrics {
                 metadataTileWidth: 96,
                 metadataLabelFont: .footnote.weight(.semibold),
                 metadataValueFont: .headline.weight(.medium),
-                titleFontSize: 28,
                 headerOffset: 0
             )
         }
@@ -694,7 +675,6 @@ private struct MediaViewMetrics {
             metadataTileWidth: 112,
             metadataLabelFont: .footnote.weight(.semibold),
             metadataValueFont: .headline.weight(.medium),
-            titleFontSize: 38,
             headerOffset: 0
         )
     }()
@@ -721,12 +701,11 @@ private struct MediaDetailTextButtonStyle: ButtonStyle {
 
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
-            .padding(10)
-            .background {
-                RoundedRectangle(cornerRadius: 14, style: .continuous)
-                    .fill(isFocused ? AppTheme.primaryText.opacity(0.16) : .clear)
-            }
-            .scaleEffect(configuration.isPressed ? 0.99 : 1)
+            .padding(.vertical, AppTheme.Spacing.xSmall)
+            .padding(.horizontal, AppTheme.Spacing.medium)
+            .focusSurface(isFocused: isFocused, restingFill: Color.clear, cornerRadius: AppTheme.Radius.inline)
+            .scaleEffect(configuration.isPressed ? AppTheme.pressedScale : 1)
+            .padding(.horizontal, -AppTheme.Spacing.medium)
     }
 }
 
@@ -735,13 +714,10 @@ private struct MediaDetailTileStyle: ButtonStyle {
 
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
-            .padding(.vertical, 10)
-            .padding(.horizontal, 16)
-            .background {
-                RoundedRectangle(cornerRadius: 22, style: .continuous)
-                    .fill(isFocused ? AppTheme.primaryText.opacity(0.16) : AppTheme.surfaceFill.opacity(0.55))
-            }
-            .scaleEffect(configuration.isPressed ? 0.98 : 1)
+            .padding(.vertical, AppTheme.Spacing.small)
+            .padding(.horizontal, AppTheme.Spacing.medium)
+            .focusSurface(isFocused: isFocused, restingFill: AppTheme.subtleSurfaceFill, cornerRadius: AppTheme.Radius.card)
+            .scaleEffect(configuration.isPressed ? AppTheme.pressedScale : 1)
     }
 }
 
@@ -827,7 +803,7 @@ private struct MediaArtworkView: View {
     let url: URL?
     let title: String
     let style: MediaArtworkStyle
-    private let shape = RoundedRectangle(cornerRadius: 30, style: .continuous)
+    private let shape = RoundedRectangle(cornerRadius: AppTheme.Radius.large, style: .continuous)
 
     var body: some View {
         shape
@@ -841,7 +817,7 @@ private struct MediaArtworkView: View {
                             .scaledToFill()
                     default:
                         Image(systemName: "film.fill")
-                            .font(.system(size: 48, weight: .semibold))
+                            .font(.largeTitle.weight(.semibold))
                             .foregroundStyle(AppTheme.secondaryText)
                     }
                 }
@@ -851,7 +827,7 @@ private struct MediaArtworkView: View {
             }
         .aspectRatio(style.aspectRatio, contentMode: .fit)
         .clipShape(shape)
-        .shadow(color: .black.opacity(0.35), radius: 28, y: 18)
+        .shadow(color: AppTheme.artworkShadow, radius: 28, y: 18)
         .accessibilityLabel(title)
     }
 }

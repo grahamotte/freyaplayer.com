@@ -2,8 +2,8 @@ import SwiftUI
 import UIKit
 
 enum MediaWatchStatusDisplay {
-    static let uiColor = UIColor.systemYellow
-    static let color = Color(uiColor: uiColor)
+    static let uiColor = AppTheme.uiSeen
+    static let color = AppTheme.seen
     static let iconName = "eye.fill"
     static let markSeenTitle = "Mark Seen"
     static let markUnseenTitle = "Mark Unseen"

@@ -58,7 +58,7 @@ struct ServerSearchPage: View {
 
     private var searchResults: some View {
         ScrollView {
-            LazyVStack(spacing: PlatformMetadata.isTV ? 24 : 16) {
+            LazyVStack(spacing: PlatformMetadata.isTV ? AppTheme.Spacing.large : AppTheme.Spacing.medium) {
                 ForEach(search.results) { result in
                     NavigationLink(value: result.item.route) {
                         SearchResultRow(
@@ -66,28 +66,26 @@ struct ServerSearchPage: View {
                             title: highlightedTitle(for: result)
                         )
                     }
-                    .buttonStyle(SearchResultButtonStyle())
+                    .buttonStyle(MediaSurfaceButtonStyle(restingFill: AppTheme.surfaceFill))
                 }
             }
             .padding(.horizontal, contentHorizontalPadding)
-            .padding(.top, PlatformMetadata.isTV ? 28 : 0)
+            .padding(.top, PlatformMetadata.isTV ? AppTheme.Spacing.large : 0)
             .padding(.bottom, contentHorizontalPadding)
         }
         .scrollIndicators(.hidden)
     }
 
     private var searchHeader: some View {
-        HStack(spacing: 16) {
+        HStack(spacing: PlatformMetadata.controlSpacing) {
             Button {
                 dismiss()
             } label: {
                 Label("Back", systemImage: "chevron.left")
             }
-            .buttonStyle(
-                MediaGlassButtonStyle(horizontalPadding: PlatformMetadata.isPhone ? 16 : 24)
-            )
+            .buttonStyle(MediaGlassButtonStyle(size: .compact))
 
-            HStack(spacing: 16) {
+            HStack(spacing: AppTheme.Spacing.medium) {
                 Image(systemName: "magnifyingglass")
                     .font(.title2.weight(.semibold))
                     .foregroundStyle(AppTheme.secondaryText)
@@ -112,29 +110,17 @@ struct ServerSearchPage: View {
                 }
             }
             .font(.title2)
-            .padding(.horizontal, resultInnerHorizontalPadding)
-            .padding(.vertical, 18)
-            .background(AppTheme.surfaceFill)
-            .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
-            .overlay {
-                RoundedRectangle(cornerRadius: 20, style: .continuous)
-                    .stroke(
-                        isSearchFieldFocused ? AppTheme.primaryText.opacity(0.8) : AppTheme.surfaceBorder,
-                        lineWidth: isSearchFieldFocused ? 2 : 1
-                    )
-            }
+            .padding(.horizontal, AppTheme.Spacing.medium)
+            .padding(.vertical, AppTheme.Spacing.medium)
+            .glassField(isFocused: isSearchFieldFocused)
         }
         .padding(.horizontal, contentHorizontalPadding)
-        .padding(.top, 20)
-        .padding(.bottom, 16)
+        .padding(.top, AppTheme.Spacing.medium)
+        .padding(.bottom, AppTheme.Spacing.medium)
     }
 
     private var contentHorizontalPadding: CGFloat {
-        PlatformMetadata.isPhone ? 16 : 48
-    }
-
-    private var resultInnerHorizontalPadding: CGFloat {
-        PlatformMetadata.isPhone ? 18 : 32
+        PlatformMetadata.pageGutter
     }
 
     private func highlightedTitle(for result: ServerTitleSearch.Result) -> Text {
@@ -173,10 +159,10 @@ private struct SearchResultRow: View {
     let title: Text
 
     var body: some View {
-        HStack(spacing: PlatformMetadata.isTV ? 32 : 24) {
+        HStack(spacing: PlatformMetadata.isTV ? AppTheme.Spacing.xLarge : AppTheme.Spacing.large) {
             SearchResultArtwork(item: item)
 
-            VStack(alignment: .leading, spacing: PlatformMetadata.isTV ? 12 : 8) {
+            VStack(alignment: .leading, spacing: PlatformMetadata.isTV ? AppTheme.Spacing.small : AppTheme.Spacing.xSmall) {
                 title
                     .font(PlatformMetadata.isTV ? .title2 : .title3)
                     .lineLimit(2)
@@ -184,7 +170,7 @@ private struct SearchResultRow: View {
 
                 if let metadata {
                     Text(metadata)
-                        .font(.subheadline.weight(.medium))
+                        .font(PlatformMetadata.labelFont.weight(.medium))
                         .foregroundStyle(AppTheme.secondaryText)
                         .lineLimit(1)
                 }
@@ -198,7 +184,7 @@ private struct SearchResultRow: View {
                 }
             }
 
-            Spacer(minLength: 24)
+            Spacer(minLength: AppTheme.Spacing.large)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(resultPadding)
@@ -218,7 +204,7 @@ private struct SearchResultRow: View {
     }
 
     private var resultPadding: CGFloat {
-        PlatformMetadata.isPhone ? 16 : 20
+        PlatformMetadata.isPhone ? AppTheme.Spacing.medium : AppTheme.Spacing.large
     }
 }
 
@@ -282,29 +268,6 @@ private struct SearchResultArtwork: View {
     }
 
     private var cornerRadius: CGFloat {
-        PlatformMetadata.isPhone ? 12 : 16
-    }
-}
-
-private struct SearchResultButtonStyle: ButtonStyle {
-    @Environment(\.isFocused) private var isFocused
-
-    func makeBody(configuration: Configuration) -> some View {
-        configuration.label
-            .foregroundStyle(AppTheme.primaryText)
-            .background {
-                RoundedRectangle(cornerRadius: 20, style: .continuous)
-                    .fill(isFocused ? AppTheme.emphasizedSurfaceFill : AppTheme.surfaceFill)
-            }
-            .overlay {
-                RoundedRectangle(cornerRadius: 20, style: .continuous)
-                    .stroke(
-                        isFocused ? AppTheme.primaryText : AppTheme.surfaceBorder,
-                        lineWidth: isFocused ? 3 : 1
-                    )
-            }
-            .scaleEffect(configuration.isPressed ? 0.99 : isFocused ? 1.015 : 1)
-            .opacity(configuration.isPressed ? 0.8 : 1)
-            .animation(.easeOut(duration: 0.16), value: isFocused)
+        AppTheme.Radius.inline
     }
 }

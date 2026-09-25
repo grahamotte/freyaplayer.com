@@ -98,7 +98,8 @@ private struct MediaWatchStatusMenu: View {
         } label: {
             Label(title, systemImage: MediaWatchStatusDisplay.iconName)
         }
-        .buttonStyle(MediaGlassButtonStyle(tint: MediaWatchStatusDisplay.buttonColor(progress: progress, isWatched: isWatched)))
+        .menuStyle(.button)
+        .buttonStyle(MediaGlassButtonStyle(role: .tinted(MediaWatchStatusDisplay.buttonColor(progress: progress, isWatched: isWatched))))
         .fixedSize(horizontal: true, vertical: false)
     }
 }

@@ -6,19 +6,19 @@ struct ServerManagementServerSection: View {
 
     var body: some View {
         ServerManagementSection("Server") {
-            VStack(alignment: .leading, spacing: 14) {
+            VStack(alignment: .leading, spacing: AppTheme.Spacing.small) {
                 Text(server.serverName)
-                    .font(.title3.weight(.semibold))
+                    .font(.headline)
 
                 Text("\(server.serverURL) (\(server.providerID.title))")
                     .foregroundStyle(AppTheme.secondaryText)
 
                 if PlatformMetadata.isPhone {
-                    VStack(alignment: .leading, spacing: 12) {
+                    VStack(alignment: .leading, spacing: AppTheme.Spacing.small) {
                         actionButtons
                     }
                 } else {
-                    HStack(spacing: 12) {
+                    HStack(spacing: AppTheme.Spacing.small) {
                         actionButtons
                     }
                 }
@@ -31,7 +31,7 @@ struct ServerManagementServerSection: View {
             Button("Deactivate") {
                 onDeactivate()
             }
-            .buttonStyle(MediaGlassButtonStyle(tint: .red))
+            .buttonStyle(MediaGlassButtonStyle(role: .destructive))
         }
     }
 }

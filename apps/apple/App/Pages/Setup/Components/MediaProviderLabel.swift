@@ -5,7 +5,7 @@ struct MediaProviderLabel: View {
     var logoSize: CGFloat = 32
 
     var body: some View {
-        HStack(spacing: 12) {
+        HStack(spacing: AppTheme.Spacing.small) {
             Image(providerID.title)
                 .resizable()
                 .scaledToFit()

@@ -2,29 +2,28 @@ import SwiftUI
 
 struct ProviderPickerView: View {
     var body: some View {
-        VStack(spacing: 56) {
+        VStack(spacing: AppTheme.Spacing.xxLarge) {
             Image("FreyaLogo")
                 .resizable()
                 .scaledToFit()
                 .frame(width: 300, height: 300)
 
             if PlatformMetadata.isPhone {
-                VStack(spacing: 24) {
+                VStack(spacing: AppTheme.Spacing.large) {
                     serviceButtons
                 }
             } else {
-                HStack(spacing: 72) {
+                HStack(spacing: AppTheme.Spacing.xxLarge) {
                     serviceButtons
                 }
             }
 
             NavigationLink(value: AppRoute.about) {
                 Label("About", systemImage: "info.circle")
-                    .font(.headline)
             }
             .buttonStyle(MediaGlassButtonStyle())
         }
-        .padding(48)
+        .padding(PlatformMetadata.pageGutter)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(AppBackground())
     }
@@ -33,17 +32,17 @@ struct ProviderPickerView: View {
         Group {
             NavigationLink(value: AppRoute.jellyfinSetup) {
                 MediaProviderLabel(providerID: .jellyfin, logoSize: serviceLogoSize)
-                    .font(.title3.weight(.semibold))
+                    .font(PlatformMetadata.sectionTitleFont)
                     .frame(width: serviceButtonWidth, height: serviceButtonHeight)
             }
-            .buttonStyle(MediaGlassButtonStyle(horizontalPadding: 0, verticalPadding: 0))
+            .buttonStyle(MediaGlassButtonStyle(size: .bare))
 
             NavigationLink(value: AppRoute.plexSetup) {
                 MediaProviderLabel(providerID: .plex, logoSize: serviceLogoSize)
-                    .font(.title3.weight(.semibold))
+                    .font(PlatformMetadata.sectionTitleFont)
                     .frame(width: serviceButtonWidth, height: serviceButtonHeight)
             }
-            .buttonStyle(MediaGlassButtonStyle(horizontalPadding: 0, verticalPadding: 0))
+            .buttonStyle(MediaGlassButtonStyle(size: .bare))
         }
     }
 

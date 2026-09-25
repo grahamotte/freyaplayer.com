@@ -17,7 +17,7 @@ struct WatchProgressCircle: View {
 
                 Image(systemName: "checkmark")
                     .font(.system(size: 11, weight: .bold))
-                    .foregroundStyle(.black)
+                    .foregroundStyle(AppTheme.inverseText)
             }
             .frame(width: Self.size, height: Self.size)
         } else if displayProgress > 0 {
@@ -30,7 +30,7 @@ struct WatchProgressCircle: View {
 
 extension WatchProgressCircle {
     static let size: CGFloat = 24
-    static let padding: CGFloat = 12
+    static let padding = AppTheme.Spacing.small
 }
 
 private struct PieSlice: Shape {

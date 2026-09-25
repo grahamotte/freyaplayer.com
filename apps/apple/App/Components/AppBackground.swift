@@ -13,10 +13,10 @@ struct AppBackground: View {
 
 struct PanelBackground: View {
     var body: some View {
-        RoundedRectangle(cornerRadius: 34, style: .continuous)
+        RoundedRectangle(cornerRadius: AppTheme.Radius.panel, style: .continuous)
             .fill(AppTheme.surfaceFill)
             .overlay {
-                RoundedRectangle(cornerRadius: 34, style: .continuous)
+                RoundedRectangle(cornerRadius: AppTheme.Radius.panel, style: .continuous)
                     .strokeBorder(AppTheme.surfaceBorder, lineWidth: 1)
             }
     }

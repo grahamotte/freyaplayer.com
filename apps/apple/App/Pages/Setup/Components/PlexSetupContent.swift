@@ -6,12 +6,12 @@ struct PlexSetupContent: View {
     @State private var showingPlexNotice = false
 
     var body: some View {
-        VStack(spacing: 36) {
+        VStack(spacing: AppTheme.Spacing.xLarge) {
             Spacer()
 
-            VStack(alignment: .leading, spacing: 18) {
+            VStack(alignment: .leading, spacing: AppTheme.Spacing.medium) {
                 MediaProviderLabel(providerID: .plex)
-                    .font(.title3.weight(.semibold))
+                    .font(PlatformMetadata.sectionTitleFont)
 
                 switch model.connectionState {
                 case .checking, .savedConnectionFailed:
@@ -33,8 +33,7 @@ struct PlexSetupContent: View {
                             .foregroundStyle(AppTheme.secondaryText)
 
                         Text(code)
-                            .font(.system(size: 42, weight: .bold, design: .rounded))
-                            .monospaced()
+                            .font(.largeTitle.weight(.bold).monospaced())
                     }
 
                     Text(message)
@@ -48,7 +47,7 @@ struct PlexSetupContent: View {
                     ProgressView("Loading your server...")
                 }
 
-                HStack(spacing: 16) {
+                HStack(spacing: AppTheme.Spacing.medium) {
                     switch model.connectionState {
                     case .signedOut:
                         Button("Connect With Plex") {
@@ -73,12 +72,12 @@ struct PlexSetupContent: View {
                 }
             }
             .frame(maxWidth: 720, alignment: .leading)
-            .padding(28)
+            .padding(PlatformMetadata.panelPadding)
             .background(PanelBackground())
 
             Spacer()
         }
-        .padding(48)
+        .padding(PlatformMetadata.pageGutter)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(AppBackground())
         .task {

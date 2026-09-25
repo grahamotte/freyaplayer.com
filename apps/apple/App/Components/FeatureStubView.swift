@@ -6,27 +6,27 @@ struct FeatureStubView: View {
     @Environment(\.dismiss) private var dismiss
 
     var body: some View {
-        VStack(spacing: 36) {
+        VStack(spacing: AppTheme.Spacing.xLarge) {
             Spacer()
 
-            VStack(alignment: .leading, spacing: 18) {
+            VStack(alignment: .leading, spacing: AppTheme.Spacing.medium) {
                 Button("Back to Libraries") {
                     dismiss()
                 }
 
                 Text(title)
-                    .font(.title2.weight(.semibold))
+                    .font(PlatformMetadata.sectionTitleFont)
 
                 Text(message)
                     .foregroundStyle(AppTheme.secondaryText)
             }
             .frame(maxWidth: 720, alignment: .leading)
-            .padding(28)
+            .padding(PlatformMetadata.panelPadding)
             .background(PanelBackground())
 
             Spacer()
         }
-        .padding(48)
+        .padding(PlatformMetadata.pageGutter)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(AppBackground())
         .navigationTitle(title)
