@@ -1,5 +1,5 @@
 {
-  "build": "1.22.2",
+  "build": "1.22.3",
   "contactEmail": "graham.otte@gmail.com",
   "contactFirstName": "Graham",
   "contactLastName": "Otte",
@@ -105,6 +105,6 @@
     },
     "android": {}
   },
-  "version": "1.22.2",
-  "whatsNew": "Fixes HomePod audio playback on additional tvOS 27 versions."
+  "version": "1.22.3",
+  "whatsNew": "Polished visual design with more consistent buttons, focus effects, and spacing across the app."
 }
